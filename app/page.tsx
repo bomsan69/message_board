@@ -27,10 +27,10 @@ export default function Dashboard() {
       const newMessage: Message = JSON.parse(event.data)
       
       setMessages(prev => {
-        const updated = [...prev, newMessage]
-        // Remove first message if exceeding max visible messages
+        const updated = [newMessage, ...prev]
+        // Remove last message if exceeding max visible messages
         if (updated.length > maxVisibleMessages) {
-          return updated.slice(1)
+          return updated.slice(0, maxVisibleMessages)
         }
         return updated
       })
@@ -45,10 +45,10 @@ export default function Dashboard() {
     }
   }, [])
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll to top when new messages arrive
   useEffect(() => {
     if (tableRef.current) {
-      tableRef.current.scrollTop = tableRef.current.scrollHeight
+      tableRef.current.scrollTop = 0
     }
   }, [messages])
 
