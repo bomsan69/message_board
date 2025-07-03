@@ -1,15 +1,17 @@
-# Use the official Node.js runtime as the base image
-# Using specific version for Ubuntu 18.04 compatibility
-FROM node:18.20.4-alpine3.18
+# Ubuntu 18.04 compatible Dockerfile
+# Use Ubuntu-based Node.js image for better compatibility
+FROM node:18.20.4-bullseye-slim
 
 # Set the working directory in the container
 WORKDIR /app
 
+# Install curl and other dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy package.json and package-lock.json (if available)
 COPY package*.json ./
-
-# Update package index and install dependencies
-RUN apk update && apk add --no-cache curl
 
 # Install Node.js dependencies
 RUN npm ci --only=production
@@ -21,8 +23,8 @@ COPY . .
 RUN npm run build
 
 # Create a non-root user to run the application
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001 && \
+RUN groupadd -g 1001 nodejs && \
+    useradd -r -u 1001 -g nodejs nextjs && \
     chown -R nextjs:nodejs /app
 
 USER nextjs
