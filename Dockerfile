@@ -1,6 +1,6 @@
 # Use the official Node.js runtime as the base image
 # Using specific version for Ubuntu 18.04 compatibility
-FROM node:18.20.4-alpine3.18
+FROM node:18.20.4-alpine
 
 # Set the working directory in the container
 WORKDIR /app
